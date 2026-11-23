@@ -1,0 +1,615 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Profil mahasiswa S1 Lulusin beserta status persetujuan, onboarding, dan paket akun.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 254
+        },
+        "namaLengkap": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 120
+        },
+        "universitas": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 160
+        },
+        "fakultas": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "prodi": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 120
+        },
+        "semester": {
+          "type": "string",
+          "maxLength": 30,
+          "enum": ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "Lebih dari 14"]
+        },
+        "judulSkripsi": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "jenisPenelitian": {
+          "type": "string",
+          "maxLength": 30,
+          "enum": ["", "Kuantitatif", "Kualitatif", "Belum tahu"]
+        },
+        "dosenPembimbing1": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "dosenPembimbing2": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "targetSidang": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^(|[0-9]{4}-[0-9]{2}-[0-9]{2})$"
+        },
+        "plan": {
+          "type": "string",
+          "enum": ["free", "premium"]
+        },
+        "premiumUntil": {
+          "type": "string",
+          "maxLength": 40,
+          "description": "ISO 8601 timestamp berakhirnya Premium, atau null jika gratis."
+        },
+        "sumberPremium": {
+          "type": "string",
+          "enum": ["bayar", "manual", "promo", "trial"],
+          "description": "Sumber aktivasi Premium (bayar, manual, promo, trial), atau null."
+        },
+        "persetujuanVersi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20
+        },
+        "persetujuanAt": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 40
+        },
+        "onboardingSelesai": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "object"
+        },
+        "updatedAt": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "uid",
+        "email",
+        "namaLengkap",
+        "universitas",
+        "fakultas",
+        "prodi",
+        "semester",
+        "judulSkripsi",
+        "jenisPenelitian",
+        "dosenPembimbing1",
+        "dosenPembimbing2",
+        "targetSidang",
+        "plan",
+        "premiumUntil",
+        "persetujuanVersi",
+        "persetujuanAt",
+        "onboardingSelesai",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "RoadmapTahap": {
+      "title": "RoadmapTahap",
+      "description": "Satu tahap dalam Roadmap skripsi mahasiswa.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "tahapId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "judul": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "deskripsi": {
+          "type": "string",
+          "maxLength": 240
+        },
+        "urutan": {
+          "type": "integer"
+        },
+        "tersembunyi": {
+          "type": "boolean"
+        },
+        "sumberTemplate": {
+          "type": "string",
+          "enum": ["Kuantitatif", "Kualitatif", "Belum tahu", "Kustom"]
+        },
+        "createdAt": {
+          "type": "object"
+        },
+        "updatedAt": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "uid",
+        "tahapId",
+        "judul",
+        "deskripsi",
+        "urutan",
+        "tersembunyi",
+        "sumberTemplate",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "RoadmapTugas": {
+      "title": "RoadmapTugas",
+      "description": "Satu tugas di dalam tahap Roadmap skripsi mahasiswa.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "tugasId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "tahapId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "judul": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "selesai": {
+          "type": "boolean"
+        },
+        "tenggat": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^(|[0-9]{4}-[0-9]{2}-[0-9]{2})$"
+        },
+        "urutan": {
+          "type": "integer"
+        },
+        "createdAt": {
+          "type": "object"
+        },
+        "updatedAt": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "uid",
+        "tugasId",
+        "tahapId",
+        "judul",
+        "selesai",
+        "tenggat",
+        "urutan",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Bimbingan": {
+      "title": "Bimbingan",
+      "description": "Jadwal atau catatan sesi bimbingan skripsi bersama dosen pembimbing.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "bimbinganId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "tanggalIso": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 40
+        },
+        "dosen": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "topik": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "ringkasan": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "tindakLanjut": {
+          "type": "array"
+        },
+        "selesai": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "object"
+        },
+        "updatedAt": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "uid",
+        "bimbinganId",
+        "tanggalIso",
+        "dosen",
+        "topik",
+        "ringkasan",
+        "tindakLanjut",
+        "selesai",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Revisi": {
+      "title": "Revisi",
+      "description": "Item revisi skripsi dari pembimbing atau penguji.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "revisiId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "isi": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "sumberKategori": {
+          "type": "string",
+          "enum": ["Pembimbing 1", "Pembimbing 2", "Penguji", "Lainnya"]
+        },
+        "sumberNama": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "prioritas": {
+          "type": "string",
+          "enum": ["Tinggi", "Sedang", "Rendah"]
+        },
+        "tenggat": {
+          "type": "string",
+          "maxLength": 40,
+          "pattern": "^(|[0-9]{4}-[0-9]{2}-[0-9]{2})$"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Belum", "Dikerjakan", "Selesai"]
+        },
+        "createdAt": {
+          "type": "object"
+        },
+        "updatedAt": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "uid",
+        "revisiId",
+        "isi",
+        "sumberKategori",
+        "sumberNama",
+        "prioritas",
+        "tenggat",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Referensi": {
+      "title": "Referensi",
+      "description": "Referensi jurnal, buku, atau sumber web milik mahasiswa.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "referensiId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "judul": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 300
+        },
+        "penulis": {
+          "type": "array"
+        },
+        "tahun": {
+          "type": "string",
+          "maxLength": 10
+        },
+        "jenis": {
+          "type": "string",
+          "enum": ["jurnal", "buku", "web", "lainnya"]
+        },
+        "namaSumber": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "volumeInfo": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "tautan": {
+          "type": "string",
+          "maxLength": 500
+        },
+        "doi": {
+          "type": "string",
+          "maxLength": 150
+        },
+        "catatan": {
+          "type": "string",
+          "maxLength": 2000
+        },
+        "tag": {
+          "type": "array"
+        },
+        "statusBaca": {
+          "type": "string",
+          "enum": ["Belum dibaca", "Sudah dibaca"]
+        },
+        "createdAt": {
+          "type": "object"
+        },
+        "updatedAt": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "uid",
+        "referensiId",
+        "judul",
+        "penulis",
+        "tahun",
+        "jenis",
+        "namaSumber",
+        "volumeInfo",
+        "tautan",
+        "doi",
+        "catatan",
+        "tag",
+        "statusBaca",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Feedback": {
+      "title": "Feedback",
+      "description": "Masukan dari mahasiswa penguji MVP Lulusin.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "feedbackId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "kategori": {
+          "type": "string",
+          "enum": ["Bug atau Error", "Saran Fitur", "Kendala Penggunaan", "Lainnya"]
+        },
+        "pesan": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1500
+        },
+        "halaman": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "createdAt": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "uid",
+        "feedbackId",
+        "kategori",
+        "pesan",
+        "halaman",
+        "createdAt"
+      ]
+    },
+    "AiChatMessage": {
+      "title": "AiChatMessage",
+      "description": "Satu pesan riwayat percakapan Asisten AI milik mahasiswa (maksimal 50 pesan terakhir).",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "pesanId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "percakapanId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["chat", "simulasi_sidang", "analisis_bab"]
+        },
+        "role": {
+          "type": "string",
+          "enum": ["user", "assistant"]
+        },
+        "teks": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16000
+        },
+        "createdAtIso": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 40
+        },
+        "createdAt": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "uid",
+        "pesanId",
+        "percakapanId",
+        "mode",
+        "role",
+        "teks",
+        "createdAtIso",
+        "createdAt"
+      ]
+    },
+    "AiUsageDay": {
+      "title": "AiUsageDay",
+      "description": "Hitungan penggunaan kuota pesan Asisten AI harian (YYYY-MM-DD).",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "dateKey": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+          "maxLength": 10
+        },
+        "count": {
+          "type": "integer"
+        },
+        "createdAt": {
+          "type": "object"
+        },
+        "updatedAt": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "uid",
+        "dateKey",
+        "count",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Dokumen profil pribadi milik mahasiswa yang hanya dapat diakses oleh pemilik UID."
+    },
+    "/users/{userId}/roadmapTahap/{tahapId}": {
+      "schema": { "$ref": "#/entities/RoadmapTahap" },
+      "description": "Tahap Roadmap skripsi milik mahasiswa."
+    },
+    "/users/{userId}/roadmapTugas/{tugasId}": {
+      "schema": { "$ref": "#/entities/RoadmapTugas" },
+      "description": "Tugas di dalam tahap Roadmap skripsi milik mahasiswa."
+    },
+    "/users/{userId}/bimbingan/{bimbinganId}": {
+      "schema": { "$ref": "#/entities/Bimbingan" },
+      "description": "Jadwal dan catatan bimbingan skripsi milik mahasiswa."
+    },
+    "/users/{userId}/revisi/{revisiId}": {
+      "schema": { "$ref": "#/entities/Revisi" },
+      "description": "Daftar revisi skripsi milik mahasiswa."
+    },
+    "/users/{userId}/referensi/{referensiId}": {
+      "schema": { "$ref": "#/entities/Referensi" },
+      "description": "Koleksi referensi jurnal, buku, dan tautan skripsi milik mahasiswa."
+    },
+    "/users/{userId}/aiChats/{pesanId}": {
+      "schema": { "$ref": "#/entities/AiChatMessage" },
+      "description": "Riwayat pesan Asisten AI milik mahasiswa (maksimal 50 pesan terakhir)."
+    },
+    "/users/{userId}/aiUsage/{dateKey}": {
+      "schema": { "$ref": "#/entities/AiUsageDay" },
+      "description": "Catatan hitungan pesan Asisten AI per tanggal (YYYY-MM-DD) milik mahasiswa."
+    },
+    "/feedback/{feedbackId}": {
+      "schema": { "$ref": "#/entities/Feedback" },
+      "description": "Kotak masukan satu arah dari pengguna MVP untuk pengembang."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Lulusin",
+  "description": "Aplikasi web pendamping skripsi untuk mahasiswa S1 di Indonesia — lihat tahap skripsi, catat bimbingan, lacak revisi, dan simpan referensi di satu tempat yang tenang.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
