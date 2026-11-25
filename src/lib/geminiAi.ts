@@ -5,7 +5,7 @@ import {
   formatPromptWithHistory,
 } from './aiLogic';
 
-const GEMINI_MODELS = ['gemini-3.8-flash', 'gemini-3.8-flash-lite'];
+const GEMINI_TEXT_MODEL = 'gemini-3.8-flash';
 
 function resolveGeminiApiKey(): string {
   const fromVite =
@@ -17,6 +17,10 @@ function resolveGeminiApiKey(): string {
 
 export function isGeminiConfigured(): boolean {
   return Boolean(resolveGeminiApiKey());
+}
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function generateThesisAssistantReply(params: {
@@ -41,10 +45,10 @@ export async function generateThesisAssistantReply(params: {
   );
 
   let lastDetail = '';
-  for (const modelName of GEMINI_MODELS) {
+  for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       const response: GenerateContentResponse = await ai.models.generateContent({
-        model: modelName,
+        model: GEMINI_TEXT_MODEL,
         contents,
         config: {
           systemInstruction,
@@ -58,9 +62,15 @@ export async function generateThesisAssistantReply(params: {
       return text;
     } catch (err: unknown) {
       lastDetail = err instanceof Error ? err.message : String(err);
-      if (!lastDetail.includes('503') && !lastDetail.includes('UNAVAILABLE')) {
+      const isTemporaryBusy =
+        lastDetail.includes('503') ||
+        lastDetail.includes('UNAVAILABLE') ||
+        lastDetail.includes('high demand');
+
+      if (!isTemporaryBusy || attempt === 3) {
         break;
       }
+      await wait(attempt * 2000);
     }
   }
 
