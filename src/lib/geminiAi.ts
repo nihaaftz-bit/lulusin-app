@@ -5,7 +5,7 @@ import {
   formatPromptWithHistory,
 } from './aiLogic';
 
-const GEMINI_TEXT_MODEL = 'gemini-2.5-flash';
+const GEMINI_TEXT_MODEL = 'gemini-3.8-flash';
 
 function resolveGeminiApiKey(): string {
   const fromVite =
