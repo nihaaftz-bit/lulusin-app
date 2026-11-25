@@ -45,13 +45,16 @@ export async function generateThesisAssistantReply(params: {
   );
 
   let lastDetail = '';
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  for (let attempt = 1; attempt <= 4; attempt++) {
     try {
       const response: GenerateContentResponse = await ai.models.generateContent({
         model: GEMINI_TEXT_MODEL,
         contents,
         config: {
           systemInstruction,
+          thinkingConfig: {
+            thinkingBudget: 0,
+          },
         },
       });
 
@@ -67,10 +70,10 @@ export async function generateThesisAssistantReply(params: {
         lastDetail.includes('UNAVAILABLE') ||
         lastDetail.includes('high demand');
 
-      if (!isTemporaryBusy || attempt === 3) {
+      if (!isTemporaryBusy || attempt === 4) {
         break;
       }
-      await wait(attempt * 2000);
+      await wait(attempt * 1500);
     }
   }
 
