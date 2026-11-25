@@ -95,7 +95,6 @@ export function AiAssistantProvider({ children }: { children: React.ReactNode })
   const uid = firebaseUser?.uid ?? null;
   const onboardingSelesai = Boolean(profile?.onboardingSelesai);
 
-  // Perbarui kunci tanggal lokal secara berkala jika melewati tengah malam
   useEffect(() => {
     const interval = window.setInterval(() => {
       const currentKey = getLocalIsoDateKey();
@@ -104,7 +103,6 @@ export function AiAssistantProvider({ children }: { children: React.ReactNode })
     return () => window.clearInterval(interval);
   }, []);
 
-  // Hitung mundur jeda kirim 3 detik
   useEffect(() => {
     if (!lastSentAtMs) {
       setCooldownSeconds(0);
@@ -121,7 +119,6 @@ export function AiAssistantProvider({ children }: { children: React.ReactNode })
     return () => window.clearInterval(timer);
   }, [lastSentAtMs]);
 
-  // Listener riwayat chat (maksimal 50 pesan terakhir)
   useEffect(() => {
     if (!uid || !onboardingSelesai) {
       setRawMessages([]);
@@ -155,7 +152,6 @@ export function AiAssistantProvider({ children }: { children: React.ReactNode })
     return () => unsub();
   }, [uid, onboardingSelesai]);
 
-  // Listener hitungan pemakaian kuota hari ini
   useEffect(() => {
     if (!uid || !onboardingSelesai) {
       setTodayUsageCount(0);
@@ -192,7 +188,6 @@ export function AiAssistantProvider({ children }: { children: React.ReactNode })
     return [...rawMessages].sort((a, b) => a.createdAtIso.localeCompare(b.createdAtIso));
   }, [rawMessages]);
 
-  // Saat pertama kali memuat, lanjutkan percakapan terakhir jika ada
   useEffect(() => {
     if (!chatsLoaded || hasInitializedActiveConv) return;
     if (allMessages.length > 0) {
@@ -260,7 +255,6 @@ export function AiAssistantProvider({ children }: { children: React.ReactNode })
     if (!uid || !profile) return false;
     if (sending) return false;
 
-    // 1. Cek hak akses fitur Premium untuk mode lanjutan
     if (
       (params.mode === 'simulasi_sidang' || params.mode === 'analisis_bab') &&
       planStatus.effectivePlan !== 'premium'
@@ -269,7 +263,6 @@ export function AiAssistantProvider({ children }: { children: React.ReactNode })
       return false;
     }
 
-    // 2. Cek jeda minimal 3 detik
     const cooldownCheck = canSendWithCooldown(lastSentAtMs, Date.now());
     if (!cooldownCheck.allowed) {
       setSendError(
@@ -278,7 +271,6 @@ export function AiAssistantProvider({ children }: { children: React.ReactNode })
       return false;
     }
 
-    // 3. Validasi panjang & isi input
     const validation = validateAiInput(params.mode, params.rawText);
     if (!validation.valid) {
       setSendError(validation.reason);
@@ -290,7 +282,6 @@ export function AiAssistantProvider({ children }: { children: React.ReactNode })
       setTodayDateKey(activeDateKey);
     }
 
-    // 4. Cek kuota harian aktual dari Firestore sebelum memanggil Gemini
     const usageRef = doc(db, 'users', uid, 'aiUsage', activeDateKey);
     let currentCount = todayUsageCount;
     try {
@@ -335,11 +326,11 @@ export function AiAssistantProvider({ children }: { children: React.ReactNode })
       });
     } catch (err) {
       setSending(false);
-      setSendError(mapGeminiErrorToIndonesian(err));
+      const rawDetail = err instanceof Error ? err.message : String(err);
+      setSendError(`${mapGeminiErrorToIndonesian(err)} (${rawDetail})`);
       return false;
     }
 
-    // 5. Catat kenaikan kuota secara atomik + simpan riwayat chat (maks 50 pesan)
     try {
       await runTransaction(db, async (tx) => {
         const usageSnap = await tx.get(usageRef);
@@ -379,7 +370,6 @@ export function AiAssistantProvider({ children }: { children: React.ReactNode })
       return false;
     }
 
-    // Simpan pesan pengguna & asisten ke users/{uid}/aiChats dan pangkas pesan > 50
     try {
       const batch = writeBatch(db);
       const excessIds = getExcessMessageIdsToPrune(
