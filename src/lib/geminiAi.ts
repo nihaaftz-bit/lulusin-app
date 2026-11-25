@@ -40,17 +40,23 @@ export async function generateThesisAssistantReply(params: {
     { babLabel: params.babLabel }
   );
 
-  const response: GenerateContentResponse = await ai.models.generateContent({
-    model: GEMINI_TEXT_MODEL,
-    contents,
-    config: {
-      systemInstruction,
-    },
-  });
+  try {
+    const response: GenerateContentResponse = await ai.models.generateContent({
+      model: GEMINI_TEXT_MODEL,
+      contents,
+      config: {
+        systemInstruction,
+      },
+    });
 
-  const text = (response.text ?? '').trim();
-  if (!text) {
-    throw new Error('GEMINI_EMPTY_RESPONSE');
+    const text = (response.text ?? '').trim();
+    if (!text) {
+      throw new Error('GEMINI_EMPTY_RESPONSE');
+    }
+    return text;
+  } catch (err: unknown) {
+    const detail = err instanceof Error ? err.message : String(err);
+    console.error('[Lulusin AI Error]:', detail);
+    throw new Error(`GEMINI_DETAIL: ${detail}`);
   }
-  return text;
 }
