@@ -5,18 +5,14 @@ import {
   formatPromptWithHistory,
 } from './aiLogic';
 
-const GEMINI_TEXT_MODEL = 'gemini-4-hydrogen';
+const GEMINI_TEXT_MODEL = 'gemini-2.5-flash';
 
 function resolveGeminiApiKey(): string {
-  const fromProcess =
-    typeof process !== 'undefined' && process.env
-      ? (process.env.GEMINI_API_KEY as string | undefined) || ''
-      : (process.env.GEMINI_API_KEY as string | undefined) || '';
   const fromVite =
     typeof import.meta !== 'undefined' && import.meta.env
       ? (import.meta.env.VITE_GEMINI_API_KEY as string | undefined) || ''
       : '';
-  return (fromProcess || fromVite).trim();
+  return fromVite.trim();
 }
 
 export function isGeminiConfigured(): boolean {
