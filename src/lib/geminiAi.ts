@@ -5,7 +5,7 @@ import {
   formatPromptWithHistory,
 } from './aiLogic';
 
-const GEMINI_TEXT_MODEL = 'gemini-3.8-flash';
+const GEMINI_MODELS = ['gemini-3.8-flash', 'gemini-3.8-flash-lite'];
 
 function resolveGeminiApiKey(): string {
   const fromVite =
@@ -40,23 +40,29 @@ export async function generateThesisAssistantReply(params: {
     { babLabel: params.babLabel }
   );
 
-  try {
-    const response: GenerateContentResponse = await ai.models.generateContent({
-      model: GEMINI_TEXT_MODEL,
-      contents,
-      config: {
-        systemInstruction,
-      },
-    });
+  let lastDetail = '';
+  for (const modelName of GEMINI_MODELS) {
+    try {
+      const response: GenerateContentResponse = await ai.models.generateContent({
+        model: modelName,
+        contents,
+        config: {
+          systemInstruction,
+        },
+      });
 
-    const text = (response.text ?? '').trim();
-    if (!text) {
-      throw new Error('GEMINI_EMPTY_RESPONSE');
+      const text = (response.text ?? '').trim();
+      if (!text) {
+        throw new Error('GEMINI_EMPTY_RESPONSE');
+      }
+      return text;
+    } catch (err: unknown) {
+      lastDetail = err instanceof Error ? err.message : String(err);
+      if (!lastDetail.includes('503') && !lastDetail.includes('UNAVAILABLE')) {
+        break;
+      }
     }
-    return text;
-  } catch (err: unknown) {
-    const detail = err instanceof Error ? err.message : String(err);
-    console.error('[Lulusin AI Error]:', detail);
-    throw new Error(`GEMINI_DETAIL: ${detail}`);
   }
+
+  throw new Error(`GEMINI_DETAIL: ${lastDetail}`);
 }
